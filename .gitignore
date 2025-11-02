@@ -4,5 +4,25 @@
 # Node.js dependencies
 node_modules/
 
+# Build output
+build/
+dist/
+
 # Environment variables
 .env
+.env.*
+!.env.example   # keep example env file if needed
+
+# Logs
+*.log
+
+# Editor folders
+.vscode/
+.idea/
+
+# Deployment folders
+.vercel/
+.netlify/
+
+# Cache
+.cache/

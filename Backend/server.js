@@ -1,30 +1,39 @@
 import express from "express";
-import "dotenv/config";
+import dotenv from "dotenv";
 import cors from "cors";
 import mongoose from "mongoose";
+import path from "path";
+import { fileURLToPath } from "url";
 import chatRoutes from "./routes/chat.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Explicitly load .env from same folder as server.js
+dotenv.config({ path: path.join(__dirname, ".env") });
+
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(cors());
-
 app.use("/api", chatRoutes);
 
+async function connectDB() {
+  try {
+    console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("✅ Connected with Database!");
+  } catch (err) {
+    console.error("❌ Failed to connect with Db", err);
+  }
+}
+
 app.listen(PORT, () => {
-    console.log(`server running on ${PORT}`);
-    connectDB();
+  console.log(`🚀 Server running on ${PORT}`);
+  connectDB();
 });
 
-const connectDB = async() => {
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log("Connected with Database!");
-    } catch(err) {
-        console.log("Failed to connect with Db", err);
-    }
-}
 
 
 // app.post("/test", async (req, res) => {
