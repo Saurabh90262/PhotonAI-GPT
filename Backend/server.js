@@ -1,14 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./Backend/config/db.js";  // 👈 capital B
-import chatRoutes from "./Backend/routes/chat.js"; // 👈 capital B
+import connectDB from "./config/db.js";   // 👈 only ./config, NOT ./Backend/config
+import chatRoutes from "./routes/chat.js"; // 👈 only ./routes, NOT ./Backend/routes
 
 dotenv.config();
 
 const app = express();
 
-// ✅ Allow only your Netlify frontend domain
+// ✅ CORS setup
 app.use(
   cors({
     origin: ["https://photon-ai.netlify.app"], // your frontend URL
@@ -23,10 +23,10 @@ app.use(express.json());
 // ✅ Routes
 app.use("/api", chatRoutes);
 
-// ✅ Connect MongoDB
+// ✅ Connect to DB
 connectDB();
 
-// ✅ Test route
+// ✅ Health check route
 app.get("/", (req, res) => {
   res.send("🚀 PhotonAI Backend is running successfully!");
 });
