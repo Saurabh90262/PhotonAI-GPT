@@ -1,58 +1,36 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 import chatRoutes from "./routes/chat.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// ✅ Load environment variables
-dotenv.config({ path: path.join(__dirname, ".env") });
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
-// ✅ Enable CORS for both Netlify & local development
+// ✅ Allow only your frontend domain (Netlify)
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // local dev
-      "https://photon-ai.netlify.app", // ✅ match your actual Netlify domain exactly
-    ],
-    methods: ["GET", "POST"],
+    origin: ["https://photon-ai.netlify.app"], // your deployed frontend URL
+    methods: ["GET", "POST", "DELETE"],
     credentials: true,
   })
 );
 
+// Middleware
 app.use(express.json());
 
-// ✅ API routes
+// Routes
 app.use("/api", chatRoutes);
 
-// ✅ Root route to verify backend is running
+// Database connection
+connectDB();
+
+// Test route
 app.get("/", (req, res) => {
-  res.send("✅ PhotonAI backend is live!");
+  res.send("PhotonAI Backend is running successfully!");
 });
 
-// ✅ Connect to MongoDB
-async function connectDB() {
-  try {
-    console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("✅ Connected with Database!");
-  } catch (err) {
-    console.error("❌ Failed to connect with DB", err);
-  }
-}
-
-// ✅ Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  connectDB();
-});
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
