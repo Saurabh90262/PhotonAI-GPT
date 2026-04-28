@@ -80,7 +80,7 @@ function Sidebar() {
       ></div>
       <section className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <button onClick={createNewChat}>
-          <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
+          <img src="/ai-logo.png" alt="PhotonAI logo" className="logo" />
           <span>Start a new Chat</span>
           <i className="fa-solid fa-pen-to-square"></i>
         </button>
@@ -105,6 +105,11 @@ function Sidebar() {
         </ul>
         <div className="sign">
           <p>Developed with &hearts; By Saurabh</p>
+          <p style={{ fontSize: "10px", marginTop: "5px", color: "#888" }}>
+          <a href="https://www.flaticon.com/free-icons/voice-recognition" title="voice recognition icons" style={{ color: "inherit", textDecoration: "none" }}>
+            Icon by HideMaru - Flaticon
+          </a>
+        </p>
         </div>
       </section>
     </>
