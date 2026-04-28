@@ -5,15 +5,24 @@ import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
   const {
-    allThreads, setAllThreads,
-    currThreadId, setCurrThreadId,
-    setNewChat, setPrompt, setReply, setPrevChats,
-    userId, isSidebarOpen, setIsSidebarOpen
+    allThreads,
+    setAllThreads,
+    currThreadId,
+    setCurrThreadId,
+    setNewChat,
+    setPrompt,
+    setReply,
+    setPrevChats,
+    userId,
+    isSidebarOpen,
+    setIsSidebarOpen,
   } = useContext(MyContext);
 
   const getAllThreads = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/all/${userId}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/thread/all/${userId}`,
+      );
       const res = await response.json();
       if (Array.isArray(res)) setAllThreads(res);
     } catch (err) {
@@ -36,7 +45,9 @@ function Sidebar() {
 
   const changeThread = async (newThreadId) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${newThreadId}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/thread/${userId}/${newThreadId}`,
+      );
       const res = await response.json();
       setPrevChats(Array.isArray(res) ? res : []);
       setCurrThreadId(newThreadId);
@@ -50,7 +61,10 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${threadId}`, { method: "DELETE" });
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/api/thread/${userId}/${threadId}`,
+        { method: "DELETE" },
+      );
       setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
       if (threadId === currThreadId) createNewChat();
     } catch (err) {
@@ -60,14 +74,15 @@ function Sidebar() {
 
   return (
     <>
-      <div 
-        className={`sidebar-overlay ${isSidebarOpen ? "show" : ""}`} 
+      <div
+        className={`sidebar-overlay ${isSidebarOpen ? "show" : ""}`}
         onClick={() => setIsSidebarOpen(false)}
       ></div>
       <section className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <button onClick={createNewChat}>
           <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
-          <span><i className="fa-solid fa-pen-to-square"></i></span>
+          <span>Start a new Chat</span>
+          <i className="fa-solid fa-pen-to-square"></i>
         </button>
 
         <ul className="history">
@@ -88,7 +103,9 @@ function Sidebar() {
             </li>
           ))}
         </ul>
-        <div className="sign"><p>Developed with &hearts; By Saurabh</p></div>
+        <div className="sign">
+          <p>Developed with &hearts; By Saurabh</p>
+        </div>
       </section>
     </>
   );
