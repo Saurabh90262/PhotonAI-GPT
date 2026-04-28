@@ -1,20 +1,38 @@
 * {
     color: #ececec;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', 'Inter', sans-serif;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
 }
 
 body {
     margin: 0;
     padding: 0;
-    background-color: #0f0f0f;
+    /* Deep space black background */
+    background-color: #050505; 
 }
 
 .app {
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    /* Subtle radial gradient to give depth */
+    background: radial-gradient(circle at 50% 0%, #1a103c 0%, #050505 60%);
     display: flex;
-    height: 100dvh; /* Better for mobile browsers */
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
     position: relative;
+}
+
+/* Custom scrollbar for the whole app */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.2);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 92, 246, 0.5);
 }

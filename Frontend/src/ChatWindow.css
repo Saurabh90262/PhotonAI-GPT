@@ -17,40 +17,78 @@
     align-items: center;
     padding: 1.5rem 2rem;
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .nav-left { display: flex; align-items: center; gap: 15px; }
-.nav-left span { font-size: 1.2rem; letter-spacing: 0.5px; }
-.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #ececec; }
+.nav-left span { font-size: 1.3rem; letter-spacing: 0.5px; background: linear-gradient(to right, #fff, #c084fc); -webkit-background-clip: text; color: transparent; }
+.hamburger { display: none; font-size: 1.5rem; cursor: pointer; color: #c084fc; transition: color 0.2s; }
+.hamburger:hover { color: #fff; }
 
 .userIconDiv { cursor: pointer; transition: transform 0.2s; }
 .userIconDiv:hover { transform: scale(1.05); }
 .userIcon {
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    height: 35px; width: 35px; border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #db2777);
+    height: 38px; width: 38px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 15px rgba(219, 39, 119, 0.4);
 }
 
-.chatInput { width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 2rem; background: linear-gradient(to top, #0f0f0f 20%, transparent); }
-.inputBox { width: 90%; max-width: 800px; position: relative; display: flex; align-items: center; background: rgba(30, 30, 30, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
-input { width: 100%; border: none; background: transparent; padding: 20px 60px 20px 20px; font-size: 1rem; color: #fff; outline: none; }
-input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.chatInput { width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 2rem; background: linear-gradient(to top, #050505 40%, transparent); }
 
-#submit { cursor: pointer; height: 40px; width: 40px; position: absolute; right: 10px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: rgba(255, 255, 255, 0.6); }
-#submit:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+/* The Modern Input Box */
+.inputBox { 
+    width: 90%; 
+    max-width: 800px; 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    background: rgba(24, 24, 27, 0.6); 
+    backdrop-filter: blur(20px); 
+    border: 1px solid rgba(139, 92, 246, 0.2); 
+    border-radius: 24px; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); 
+    transition: all 0.3s ease;
+}
 
-.info { font-size: 0.75rem; padding: 1rem; color: rgba(255, 255, 255, 0.4); text-align: center; }
+.inputBox:focus-within {
+    background: rgba(24, 24, 27, 0.8);
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 8px 40px rgba(168, 85, 247, 0.15);
+}
 
-.dropDown { position: absolute; top: 4.5rem; right: 2rem; width: 180px; background: rgba(30, 30, 30, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 12px; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); }
-.dropDownItem { font-size: 0.9rem; padding: 10px 12px; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
-.dropDownItem:hover { background: rgba(255, 255, 255, 0.1); }
+input { width: 100%; border: none; background: transparent; padding: 22px 70px 22px 24px; font-size: 1.05rem; color: #fff; outline: none; }
+input::placeholder { color: #71717a; font-weight: 300; }
+
+/* The Send Button */
+#submit { 
+    cursor: pointer; 
+    height: 42px; 
+    width: 42px; 
+    position: absolute; 
+    right: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 14px; 
+    color: #fff;
+    background: #7c3aed;
+    transition: all 0.2s ease; 
+}
+#submit:hover { background: #9333ea; transform: scale(1.05); box-shadow: 0 0 15px rgba(147, 51, 234, 0.5); }
+
+.info { font-size: 0.75rem; padding: 1rem; color: #52525b; text-align: center; }
+
+.dropDown { position: absolute; top: 4.5rem; right: 2rem; width: 180px; background: rgba(24, 24, 27, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(139, 92, 246, 0.2); padding: 8px; border-radius: 16px; z-index: 1000; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); animation: dropIn 0.2s ease-out; }
+.dropDownItem { font-size: 0.9rem; padding: 12px; cursor: pointer; border-radius: 10px; display: flex; align-items: center; gap: 12px; color: #d4d4d8; transition: all 0.2s; }
+.dropDownItem:hover { background: rgba(139, 92, 246, 0.15); color: #fff; }
+
+@keyframes dropIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 768px) {
     .hamburger { display: block; }
     .navbar { padding: 1rem 1.5rem; }
-    .inputBox { width: 95%; }
-    input { padding: 16px 50px 16px 16px; }
+    .inputBox { width: 95%; border-radius: 20px; }
+    input { padding: 18px 60px 18px 18px; font-size: 1rem; }
     .dropDown { right: 1rem; }
 }
