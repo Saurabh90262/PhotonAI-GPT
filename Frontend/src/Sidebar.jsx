@@ -5,125 +5,92 @@ import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
   const {
-    allThreads,
-    setAllThreads,
-    currThreadId,
-    setNewChat,
-    setPrompt,
-    setReply,
-    setCurrThreadId,
-    setPrevChats,
+    allThreads, setAllThreads,
+    currThreadId, setCurrThreadId,
+    setNewChat, setPrompt, setReply, setPrevChats,
+    userId, isSidebarOpen, setIsSidebarOpen
   } = useContext(MyContext);
 
-  // ✅ Fetch all chat threads
   const getAllThreads = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread`
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/all/${userId}`);
       const res = await response.json();
-      const filteredData = res.map((thread) => ({
-        threadId: thread.threadId,
-        title: thread.title,
-      }));
-      setAllThreads(filteredData);
+      if (Array.isArray(res)) setAllThreads(res);
     } catch (err) {
       console.error("Error fetching threads:", err);
     }
   };
 
   useEffect(() => {
-    getAllThreads();
-  }, [currThreadId]);
+    if (userId) getAllThreads();
+  }, [currThreadId, userId]);
 
-  // ✅ Create new chat
   const createNewChat = () => {
     setNewChat(true);
     setPrompt("");
     setReply(null);
     setCurrThreadId(uuidv1());
     setPrevChats([]);
+    if (window.innerWidth <= 768) setIsSidebarOpen(false);
   };
 
-  // ✅ Load messages of selected thread
   const changeThread = async (newThreadId) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread/${newThreadId}`
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${newThreadId}`);
       const res = await response.json();
-
-      // If response is an array of messages (as your backend sends)
-      if (Array.isArray(res)) {
-        setPrevChats(res);
-      } else {
-        setPrevChats([]);
-      }
-
+      setPrevChats(Array.isArray(res) ? res : []);
       setCurrThreadId(newThreadId);
       setNewChat(false);
       setReply(null);
+      if (window.innerWidth <= 768) setIsSidebarOpen(false);
     } catch (err) {
       console.error("Error loading thread:", err);
     }
   };
 
-  // ✅ Delete thread
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread/${threadId}`,
-        { method: "DELETE" }
-      );
-      const res = await response.json();
-      console.log(res);
-
-      // Update sidebar after deletion
-      setAllThreads((prev) =>
-        prev.filter((thread) => thread.threadId !== threadId)
-      );
-
-      // If the current chat was deleted — start a new one
-      if (threadId === currThreadId) {
-        createNewChat();
-      }
+      await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${threadId}`, { method: "DELETE" });
+      setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
+      if (threadId === currThreadId) createNewChat();
     } catch (err) {
       console.error("Error deleting thread:", err);
     }
   };
 
   return (
-    <section className="sidebar">
-      <button onClick={createNewChat}>
-        <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
-        <span>
-          <i className="fa-solid fa-pen-to-square"></i>
-        </span>
-      </button>
+    <>
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? "show" : ""}`} 
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+      <section className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
+        <button onClick={createNewChat}>
+          <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo" />
+          <span><i className="fa-solid fa-pen-to-square"></i></span>
+        </button>
 
-      <ul className="history">
-        {allThreads?.map((thread, idx) => (
-          <li
-            key={idx}
-            onClick={() => changeThread(thread.threadId)}
-            className={thread.threadId === currThreadId ? "highlighted" : ""}
-          >
-            {thread.title}
-            <i
-              className="fa-solid fa-trash"
-              onClick={(e) => {
-                e.stopPropagation(); // stop event bubbling
-                deleteThread(thread.threadId);
-              }}
-            ></i>
-          </li>
-        ))}
-      </ul>
-
-      <div className="sign">
-        <p>Developed with &hearts; By Saurabh</p>
-      </div>
-    </section>
+        <ul className="history">
+          {allThreads?.map((thread, idx) => (
+            <li
+              key={idx}
+              onClick={() => changeThread(thread.threadId)}
+              className={thread.threadId === currThreadId ? "highlighted" : ""}
+            >
+              {thread.title}
+              <i
+                className="fa-solid fa-trash"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteThread(thread.threadId);
+                }}
+              ></i>
+            </li>
+          ))}
+        </ul>
+        <div className="sign"><p>Developed with &hearts; By Saurabh</p></div>
+      </section>
+    </>
   );
 }
 

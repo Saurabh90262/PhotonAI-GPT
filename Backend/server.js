@@ -1,36 +1,35 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./config/db.js";   // 👈 only ./config, NOT ./Backend/config
-import chatRoutes from "./routes/chat.js"; // 👈 only ./routes, NOT ./Backend/routes
+import connectDB from "./config/db.js";
+
+import chatRoutes from "./routes/chat.js";
+import threadRoutes from "./routes/thread.js";
 
 dotenv.config();
 
 const app = express();
 
-// ✅ CORS setup
 app.use(
   cors({
-    origin: ["https://photon-ai.netlify.app"], // your frontend URL
-    methods: ["GET", "POST", "DELETE"],
+    origin: ["https://photon-ai.netlify.app", "http://localhost:5173"],
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-// ✅ Middleware
+app.options("*", cors());
 app.use(express.json());
 
-// ✅ Routes
-app.use("/api", chatRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/thread", threadRoutes);
 
-// ✅ Connect to DB
 connectDB();
 
-// ✅ Health check route
 app.get("/", (req, res) => {
   res.send("🚀 PhotonAI Backend is running successfully!");
 });
 
-// ✅ Start server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
