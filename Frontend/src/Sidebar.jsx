@@ -5,24 +5,15 @@ import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
   const {
-    allThreads,
-    setAllThreads,
-    currThreadId,
-    setCurrThreadId,
-    setNewChat,
-    setPrompt,
-    setReply,
-    setPrevChats,
-    userId,
-    isSidebarOpen,
-    setIsSidebarOpen,
+    allThreads, setAllThreads,
+    currThreadId, setCurrThreadId,
+    setNewChat, setPrompt, setReply, setPrevChats,
+    userId, isSidebarOpen, setIsSidebarOpen,
   } = useContext(MyContext);
 
   const getAllThreads = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread/all/${userId}`,
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/all/${userId}`);
       const res = await response.json();
       if (Array.isArray(res)) setAllThreads(res);
     } catch (err) {
@@ -45,9 +36,7 @@ function Sidebar() {
 
   const changeThread = async (newThreadId) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread/${userId}/${newThreadId}`,
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${newThreadId}`);
       const res = await response.json();
       setPrevChats(Array.isArray(res) ? res : []);
       setCurrThreadId(newThreadId);
@@ -61,10 +50,7 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/api/thread/${userId}/${threadId}`,
-        { method: "DELETE" },
-      );
+      await fetch(`${import.meta.env.VITE_API_URL}/api/thread/${userId}/${threadId}`, { method: "DELETE" });
       setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
       if (threadId === currThreadId) createNewChat();
     } catch (err) {
@@ -78,12 +64,19 @@ function Sidebar() {
         className={`sidebar-overlay ${isSidebarOpen ? "show" : ""}`}
         onClick={() => setIsSidebarOpen(false)}
       ></div>
-      <section className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
-        <button onClick={createNewChat}>
-          <img src="/ai-logo.png" alt="PhotonAI logo" className="logo" />
-          <span>Start a new Chat</span>
-          <i className="fa-solid fa-pen-to-square"></i>
-        </button>
+
+      <section className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+        <div className="sidebar-header">
+          <button onClick={createNewChat} className="new-chat-btn">
+            <img src="/ai-logo.png" alt="PhotonAI logo" className="logo" />
+            <span>New Chat</span>
+            <i className="fa-solid fa-pen-to-square"></i>
+          </button>
+          
+          <div className="close-sidebar-btn" onClick={() => setIsSidebarOpen(false)} title="Close sidebar">
+            <i className="fa-solid fa-chevron-left"></i>
+          </div>
+        </div>
 
         <ul className="history">
           {allThreads?.map((thread, idx) => (
@@ -106,10 +99,10 @@ function Sidebar() {
         <div className="sign">
           <p>Developed with &hearts; By Saurabh</p>
           <p style={{ fontSize: "10px", marginTop: "5px", color: "#888" }}>
-          <a href="https://www.flaticon.com/free-icons/voice-recognition" title="voice recognition icons" style={{ color: "inherit", textDecoration: "none" }}>
-            Icon by HideMaru - Flaticon
-          </a>
-        </p>
+            <a href="https://www.flaticon.com/free-icons/voice-recognition" title="voice recognition icons" style={{ color: "inherit", textDecoration: "none" }}>
+              Icon by HideMaru - Flaticon
+            </a>
+          </p>
         </div>
       </section>
     </>

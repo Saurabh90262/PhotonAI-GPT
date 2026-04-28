@@ -1,75 +1,39 @@
-.chats {
-    flex: 1; display: flex; flex-direction: column; max-width: 900px;
-    width: 100%; height: 100%; overflow-y: auto; padding: 1rem 2rem 6rem;
-    scroll-behavior: smooth;
-}
+.chats { flex: 1; display: flex; flex-direction: column; max-width: 900px; width: 100%; height: 100%; overflow-y: auto; padding: 1rem 2rem 6rem; scroll-behavior: smooth; }
+.chats::-webkit-scrollbar { width: 6px; }
+.chats::-webkit-scrollbar-track { background: transparent; }
+.chats::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
-/* The Welcome Header */
 h1 {
-    color: transparent; 
-    background: linear-gradient(135deg, #fff 0%, #c084fc 100%);
-    -webkit-background-clip: text; 
-    background-clip: text;
-    font-size: 3rem; 
-    font-weight: 700; 
-    text-align: center;
-    margin-top: 30vh; 
-    animation: fadeInUp 0.8s ease-out;
-    letter-spacing: -1px;
+    background: linear-gradient(270deg, #e9d5ff, #a855f7, #c084fc, #e9d5ff); background-size: 200% auto; color: transparent; 
+    -webkit-background-clip: text; background-clip: text; font-size: 3rem; font-weight: 700; text-align: center;
+    margin-top: 30vh; letter-spacing: -1px; animation: textShimmer 3s linear infinite, popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.userDiv, .gptDiv { margin: 1.2rem 0; display: flex; flex-direction: column; width: 100%; animation: fadeInMsg 0.4s ease-out; }
-.userDiv { align-items: flex-end; }
-.gptDiv { align-items: flex-start; }
+.userDiv, .gptDiv { margin: 1.2rem 0; display: flex; flex-direction: column; width: 100%; opacity: 0; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.userDiv { align-items: flex-end; transform-origin: bottom right; }
+.gptDiv { align-items: flex-start; transform-origin: bottom left; }
 
-/* User Bubble - Vibrant Purple */
+@keyframes popIn {
+    0% { opacity: 0; transform: translateY(20px) scale(0.9); filter: blur(5px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
 .userMessage {
-    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); 
-    color: #fff; 
-    padding: 14px 22px;
-    border-radius: 22px 22px 6px 22px; 
-    font-size: 1.05rem;
-    line-height: 1.5; 
-    max-width: 80%; 
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.25);
-    letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%); color: #fff; padding: 14px 22px; border-radius: 22px 22px 6px 22px; 
+    font-size: 1.05rem; line-height: 1.5; max-width: 80%; box-shadow: 0 5px 20px rgba(124, 58, 237, 0.3); letter-spacing: 0.3px; transition: transform 0.2s;
 }
+.userMessage:hover { transform: scale(1.02); }
 
-/* AI Text */
-.gptDiv p, .gptDiv div { 
-    font-size: 1.05rem; 
-    line-height: 1.7; 
-    color: #e4e4e7; 
-    max-width: 100%; 
-    overflow-wrap: anywhere; 
-    letter-spacing: 0.2px;
-}
+.gptDiv p, .gptDiv div { font-size: 1.05rem; line-height: 1.7; color: #e4e4e7; max-width: 100%; overflow-wrap: anywhere; letter-spacing: 0.2px; }
 
-/* AI Code Blocks - Dark glass look with purple accent */
 .gptDiv pre { 
-    background: #09090b; 
-    border-radius: 12px; 
-    padding: 1.5rem; 
-    overflow-x: auto; 
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-left: 4px solid #a855f7; 
-    margin: 1rem 0; 
-    max-width: 100%; 
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    background: rgba(9, 9, 11, 0.8); backdrop-filter: blur(10px); border-radius: 12px; padding: 1.5rem; overflow-x: auto; 
+    border: 1px solid rgba(168, 85, 247, 0.2); border-left: 4px solid #a855f7; margin: 1rem 0; max-width: 100%; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); transition: border-color 0.3s;
 }
+.gptDiv pre:hover { border-color: rgba(168, 85, 247, 0.6); }
 
-.gptDiv code { 
-    font-family: 'Fira Code', 'Courier New', monospace; 
-    font-size: 0.9rem; 
-    color: #d8b4fe;
-}
-
-.gptDiv p code {
-    background: rgba(168, 85, 247, 0.15);
-    padding: 2px 6px;
-    border-radius: 6px;
-    color: #e9d5ff;
-}
+.gptDiv code { font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.9rem; color: #d8b4fe; }
+.gptDiv p code { background: rgba(168, 85, 247, 0.15); padding: 2px 6px; border-radius: 6px; color: #e9d5ff; border: 1px solid rgba(168, 85, 247, 0.3); }
 
 @media (max-width: 768px) {
     .chats { padding: 1rem 1rem 5rem; }
@@ -78,6 +42,3 @@ h1 {
     .gptDiv p, .gptDiv div { font-size: 1rem; }
     .gptDiv pre { padding: 1.2rem; }
 }
-
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
-@keyframes fadeInMsg { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

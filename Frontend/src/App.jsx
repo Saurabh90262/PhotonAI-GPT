@@ -6,7 +6,6 @@ import { useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 
 function App() {
-  // Synchronous User ID generation to ensure isolation on new devices
   const getInitialUserId = () => {
     let id = localStorage.getItem("userId");
     if (!id) {
@@ -23,7 +22,12 @@ function App() {
   const [prevChats, setPrevChats] = useState([]); 
   const [newChat, setNewChat] = useState(true);
   const [allThreads, setAllThreads] = useState([]); 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => window.innerWidth > 768);
+
+  // --- NEW STATES FOR STOP BUTTON ---
+  const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [stopTyping, setStopTyping] = useState(false);
 
   const providerValues = {
     prompt, setPrompt,
@@ -33,11 +37,23 @@ function App() {
     prevChats, setPrevChats,
     allThreads, setAllThreads,
     userId,
-    isSidebarOpen, setIsSidebarOpen
+    isSidebarOpen, setIsSidebarOpen,
+    loading, setLoading,
+    isTyping, setIsTyping,
+    stopTyping, setStopTyping
   };
 
   return (
     <div className="app">
+      <div className="ai-background">
+        <div className="glow-orb orb-1"></div>
+        <div className="glow-orb orb-2"></div>
+        <div className="glow-orb orb-3"></div>
+        {[...Array(15)].map((_, i) => (
+          <div key={i} className={`particle particle-${i + 1}`}></div>
+        ))}
+      </div>
+
       <MyContext.Provider value={providerValues}>
         <Sidebar />
         <ChatWindow />

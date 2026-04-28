@@ -6,26 +6,49 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
 function Chat() {
-  const { newChat, prevChats, reply } = useContext(MyContext);
+  const { newChat, prevChats, reply, setIsTyping, stopTyping, setStopTyping } = useContext(MyContext);
   const [latestReply, setLatestReply] = useState(null);
   const chatEndRef = useRef(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (!reply) {
       setLatestReply(null); 
+      setIsTyping(false);
       return;
     }
     if (!prevChats?.length) return;
 
+    setIsTyping(true);
     let idx = 0;
-    const interval = setInterval(() => {
-      idx += 3; // Slice by characters to preserve markdown spacing perfectly
+    
+    // Clear any existing intervals
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(() => {
+      idx += 3;
       setLatestReply(reply.slice(0, idx));
-      if (idx >= reply.length) clearInterval(interval);
+      if (idx >= reply.length) {
+        clearInterval(intervalRef.current);
+        setIsTyping(false);
+      }
     }, 15);
 
-    return () => clearInterval(interval);
-  }, [reply, prevChats.length]);
+    return () => {
+      clearInterval(intervalRef.current);
+      setIsTyping(false);
+    };
+  }, [reply, prevChats.length, setIsTyping]);
+
+  // Listener for the "Skip Animation" stop button action
+  useEffect(() => {
+    if (stopTyping) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setLatestReply(reply); // Jump straight to the full text
+      setIsTyping(false);
+      setStopTyping(false); // Reset signal
+    }
+  }, [stopTyping, reply, setIsTyping, setStopTyping]);
 
   useEffect(() => {
     if (chatEndRef.current) {
